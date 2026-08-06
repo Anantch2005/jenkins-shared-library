@@ -1,3 +1,5 @@
+
+// Trivy Scan using Jenkins Shared Library
 def call(Map config){
 
     docker.image('aquasec/trivy:latest').inside('''

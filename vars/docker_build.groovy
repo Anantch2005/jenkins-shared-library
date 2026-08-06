@@ -1,3 +1,4 @@
+// Docker Build using Jenkins Shared Library
 def call(Map config = [:]) {
 
     def image       = config.image ?: error("image is required")
