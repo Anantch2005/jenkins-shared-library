@@ -1,3 +1,4 @@
+//Docker Push using Jenkins Shared Library
 def call(Map config = [:]) {
 
     def image         = config.image ?: error("image is required")
@@ -23,6 +24,5 @@ def call(Map config = [:]) {
         sh "docker push ${image}:${tag}"
 
     }
-
     echo "Docker image '${image}:${tag}' pushed successfully."
 }
