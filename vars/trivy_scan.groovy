@@ -17,29 +17,34 @@ def call(Map config = [:]) {
  Image      : ${image}:${tag}
  Severity   : ${severity}
  Exit Code  : ${exitCode}
- Format      : ${format}
+ Format     : ${format}
 ========================================
 """
 
     try {
 
-        String command = """
-trivy image \
---severity ${severity} \
---exit-code ${exitCode} \
---format ${format}
-"""
+        // Build the command as a list of tokens and join with a single
+        // space at the end — avoids backslash/newline continuation bugs
+        // entirely and guarantees the image is always the last argument.
+        List<String> parts = [
+            'trivy', 'image',
+            '--severity', severity,
+            '--exit-code', exitCode,
+            '--format', format
+        ]
 
         if (ignoreFile?.trim()) {
-            command += " --ignorefile ${ignoreFile}"
+            parts << '--ignorefile' << ignoreFile
         }
 
         if (output?.trim()) {
-            command += " --output ${output}"
+            parts << '--output' << output
         }
 
         // Image must always be the last argument
-        command += " ${image}:${tag}"
+        parts << "${image}:${tag}"
+
+        String command = parts.join(' ')
 
         echo "Running command:"
         echo command
