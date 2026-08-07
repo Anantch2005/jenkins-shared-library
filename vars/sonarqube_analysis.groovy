@@ -29,7 +29,6 @@ def call(Map config = [:]) {
     } catch (Exception ex) {
 
         error("SonarQube analysis failed: ${ex}")
-
     }
 
 }
