@@ -12,7 +12,7 @@ def call(Map config = [:]) {
 
     echo """
 ========================================
-           Trivy Image Scan
+          Trivy Image Scan
 ========================================
  Image      : ${image}:${tag}
  Severity   : ${severity}
@@ -23,12 +23,12 @@ def call(Map config = [:]) {
 
     try {
 
-        def command = """
-        trivy image \
-        --severity ${severity} \
-        --exit-code ${exitCode} \
-        --format ${format}
-        """
+        String command = """
+trivy image \
+--severity ${severity} \
+--exit-code ${exitCode} \
+--format ${format}
+"""
 
         if (ignoreFile?.trim()) {
             command += " --ignorefile ${ignoreFile}"
@@ -38,18 +38,25 @@ def call(Map config = [:]) {
             command += " --output ${output}"
         }
 
+        // Image must always be the last argument
         command += " ${image}:${tag}"
+
+        echo "Running command:"
+        echo command
 
         sh command
 
         echo "Trivy scan completed successfully."
 
+    } catch (Exception ex) {
+
+        error("""
+========================================
+ Trivy Scan Failed
+========================================
+${ex.getMessage()}
+========================================
+""")
+
     }
-
-    catch (Exception ex) {
-
-        error("Trivy scan failed: ${ex}")
-
-    }
-
 }
