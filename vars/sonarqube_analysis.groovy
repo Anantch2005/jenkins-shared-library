@@ -1,13 +1,34 @@
 // SonarQube Analysis using Jenkins Shared Library
-def call(Map config){
+def call(Map config = [:]) {
 
-    docker.image(config.image).inside('-u root:root'){
+    def server  = config.get('server', 'SonarQube')
+    def scanner = config.get('scanner', 'sonar-scanner')
+    def options = config.get('options', '')
 
-        withSonarQubeEnv(config.server){
+    echo """
+========================================
+        SonarQube Analysis
+========================================
+ Server  : ${server}
+ Scanner : ${scanner}
+========================================
+"""
 
-            sh 'sonar-scanner'
+    try {
+
+        withSonarQubeEnv(server) {
+
+            sh """
+            ${scanner} ${options}
+            """
 
         }
+
+        echo "SonarQube analysis completed successfully."
+
+    } catch (Exception ex) {
+
+        error("SonarQube analysis failed: ${ex}")
 
     }
 
