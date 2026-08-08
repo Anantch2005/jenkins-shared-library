@@ -6,7 +6,7 @@ def call(Map config = [:]) {
     def disableDeferredWipeout = config.get('disableDeferredWipeout', true)
     def notFailBuild = config.get('notFailBuild', true)
 
-    echo """
+echo """
 ========================================
          Clean Workspace
 ========================================
@@ -14,6 +14,7 @@ def call(Map config = [:]) {
  Deferred Wipeout   : ${disableDeferredWipeout}
  Fail Build         : ${!notFailBuild}
 ========================================
+
 """
 
     try {
